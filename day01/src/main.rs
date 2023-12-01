@@ -26,11 +26,18 @@ const NUMBERS: [&str; 9] = [
 ];
 
 fn get_number_string_parsed(number: &str) -> u32 {
-    (NUMBERS.iter().position(|&r| r == number).unwrap_or(usize::MAX).wrapping_add(1)) as u32
+    (NUMBERS
+        .iter()
+        .position(|&r| r == number)
+        .unwrap_or(usize::MAX)
+        .wrapping_add(1)) as u32
 }
 
 fn get_substring_numbers(string: &str) -> Vec<(usize, &str)> {
-    let mut nums = NUMBERS.iter().flat_map(|n| string.match_indices(n)).collect::<Vec<(usize, &str)>>();
+    let mut nums = NUMBERS
+        .iter()
+        .flat_map(|n| string.match_indices(n))
+        .collect::<Vec<(usize, &str)>>();
     nums.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
     nums
 }
@@ -43,8 +50,8 @@ fn get_first_number_string(string: &str, last: bool) -> Option<(usize, u32)> {
         res.iter().next()
     };
 
-    if res.is_some() {
-        Some((res.unwrap().0, get_number_string_parsed(res.unwrap().1)))
+    if let Some(r) = res {
+        Some((r.0, get_number_string_parsed(r.1)))
     } else {
         None
     }
@@ -54,17 +61,8 @@ fn get_digit(input: &str) -> u32 {
     let first = get_first_number(input.chars().into_iter(), false);
     let last = get_first_number(input.chars().into_iter(), true);
 
-    let first_digit = if let Some(d) = first {
-        d.1.to_digit(10).unwrap()
-    } else {
-        0
-    };
-
-    let second_digit = if let Some(d) = last {
-        d.1.to_digit(10).unwrap()
-    } else {
-        0
-    };
+    let first_digit = first.unwrap_or((0, '0')).1.to_digit(10).unwrap_or(0);
+    let second_digit = last.unwrap_or((0, '0')).1.to_digit(10).unwrap_or(0);
 
     10 * first_digit + second_digit
 }
@@ -78,15 +76,14 @@ fn get_digit_string(input: &str) -> u32 {
             if first.0 < second.0 {
                 first.1
             } else {
-                second.1.to_digit(10).unwrap()
+                second.1.to_digit(10).unwrap_or(0)
             }
         }
         (Some(first), None) => first.1,
-        (None, Some(second)) => second.1.to_digit(10).unwrap(),
+        (None, Some(second)) => second.1.to_digit(10).unwrap_or(0),
         (None, None) => 0,
     };
 
-    
     let end_1 = get_first_number_string(input, true);
     let end_2 = get_first_number(input.chars().into_iter(), true);
 
@@ -95,11 +92,11 @@ fn get_digit_string(input: &str) -> u32 {
             if first.0 > second.0 {
                 first.1
             } else {
-                second.1.to_digit(10).unwrap()
+                second.1.to_digit(10).unwrap_or(0)
             }
         }
         (Some(first), None) => first.1,
-        (None, Some(second)) => second.1.to_digit(10).unwrap(),
+        (None, Some(second)) => second.1.to_digit(10).unwrap_or(0),
         (None, None) => 0,
     };
 
