@@ -1,8 +1,5 @@
-use std::fs::read_to_string;
-
 fn read_file() -> Vec<String> {
-    read_to_string("./input.txt")
-        .unwrap()
+    include_str!("../input.txt")
         .lines()
         .map(|l| l.to_string())
         .collect()
@@ -26,11 +23,11 @@ const NUMBERS: [&str; 9] = [
 ];
 
 fn get_number_string_parsed(number: &str) -> u32 {
-    (NUMBERS
+    NUMBERS
         .iter()
         .position(|&r| r == number)
         .unwrap_or(usize::MAX)
-        .wrapping_add(1)) as u32
+        .wrapping_add(1) as u32
 }
 
 fn get_substring_numbers(string: &str) -> Vec<(usize, &str)> {
